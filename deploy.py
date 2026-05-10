@@ -17,11 +17,13 @@ load_dotenv()
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
 GOOGLE_CLOUD_STORAGE_BUCKET = os.getenv("GOOGLE_CLOUD_STORAGE_BUCKET")
+CUSTOM_SERVICE_ACCOUNT = os.getenv("CUSTOM_SERVICE_ACCOUNT","")
 
 
 print("Project ID:", PROJECT_ID)
 print("Location:", LOCATION)
 print("Staging bucket:", GOOGLE_CLOUD_STORAGE_BUCKET)
+print("Custom service account:", CUSTOM_SERVICE_ACCOUNT)
 if not PROJECT_ID or not LOCATION or not GOOGLE_CLOUD_STORAGE_BUCKET:
   print(
       "Missing GOOGLE_CLOUD_PROJECT, GOOGLE_CLOUD_LOCATION, or STAGING_BUCKET",
@@ -50,11 +52,13 @@ def deploy_agent():
       ],
       extra_packages=["multi_tool_base_agent/agent.py",
       "multi_tool_base_agent/tools.py"],
-      display_name="multi_tool_base_agent_v1",
+      display_name="multi_tool_base_agent_v2",
+      service_account=f"{CUSTOM_SERVICE_ACCOUNT}",
       env_vars = {
         "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY": "true",
         "OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT": "true",
       }
+
     
   )
   print(f"\nSuccessfully created agent: {remote_agent.resource_name}")

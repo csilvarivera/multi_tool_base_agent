@@ -12,6 +12,7 @@ This sample demonstrates a multi-tool agent built using the Agent Development Ki
 Before you begin, make sure you have the following installed:
 - **Python**: Version `>=3.11` (as required by `numpy` and other dependencies).
 - **Git**: For checking out the codebase.
+- **Google Cloud Storage Bucket**: A GCS bucket (e.g., `gs://my-agent-staging-bucket`) in your project to stage the packaged agent source code during deployment to Agent Runtime.
 
 ### Getting Started
 
@@ -43,7 +44,11 @@ cd multi_tool_base_agent
    ```
 
 2. **Configure Environment**:
-   Copy `.env-example` to `.env` and fill in your Google Cloud project details.
+   Copy `.env-example` to `.env` and configure the following variables:
+   - `GOOGLE_CLOUD_PROJECT`: Your Google Cloud Project ID.
+   - `GOOGLE_CLOUD_LOCATION`: Your deployment region (e.g., `europe-west1`).
+   - `GOOGLE_CLOUD_STORAGE_BUCKET`: Your GCS staging bucket URL (e.g., `gs://my-agent-staging-bucket`).
+   - `CUSTOM_SERVICE_ACCOUNT`: Your custom service account email (e.g., `multi-tool-agent-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com`).
 
 ## Running the Agent
 
@@ -55,7 +60,9 @@ uv run adk web .
 
 ## Deploying the Agent
 
-To deploy the agent to Vertex AI Agent Runtime (from your virtual enviroment):
+Before deploying, ensure all Google Cloud API and IAM permission prerequisites are met. Review the [Deployment Requirements Guide](deployment_requirements.md) for the full specification.
+
+To deploy the agent to Vertex AI Agent Runtime (from your virtual environment):
 ```bash
 python -m deploy
 ```
