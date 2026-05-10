@@ -7,6 +7,20 @@ This sample demonstrates a multi-tool agent built using the Agent Development Ki
 - **Weather Lookup**: Retrieves weather information for a given location.
 - **Calculator**: Performs basic mathematical calculations.
 
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+- **Python**: Version `>=3.11` (as required by `numpy` and other dependencies).
+- **Git**: For checking out the codebase.
+
+### Getting Started
+
+Clone the repository to your local machine:
+```bash
+git clone https://github.com/csilvarivera/multi_tool_base_agent
+cd multi_tool_base_agent
+```
+
 ## Setup
 
 1. **Create & Initialize Virtual Environment**:
