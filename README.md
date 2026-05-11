@@ -9,10 +9,32 @@ This sample demonstrates a multi-tool agent built using the Agent Development Ki
 
 ## Prerequisites
 
-Before you begin, make sure you have the following installed:
+Before you begin, make sure you have the following installed and configured:
 - **Python**: Version `>=3.11` (as required by `numpy` and other dependencies).
 - **Git**: For checking out the codebase.
+- **Google Cloud CLI (gcloud)**: Installed and configured on your local machine.
+- **Application Default Credentials (ADC)**: Configured locally so the ADK agent can authenticate requests to Vertex AI APIs.
 - **Google Cloud Storage Bucket**: A GCS bucket (e.g., `gs://my-agent-staging-bucket`) in your project to stage the packaged agent source code during deployment to Agent Runtime.
+
+### Google Cloud Authentication
+
+To authenticate your local environment for development and deployment, run the following commands:
+
+1. **Log in to your Google Cloud account**:
+   ```bash
+   gcloud auth login
+   ```
+
+2. **Set your default Google Cloud project**:
+   ```bash
+   gcloud config set project YOUR_PROJECT_ID
+   ```
+
+3. **Configure Application Default Credentials (ADC)**:
+   This allows Python client libraries to automatically detect your credentials when running or deploying the agent locally:
+   ```bash
+   gcloud auth application-default login
+   ```
 
 ### Getting Started
 
