@@ -111,14 +111,18 @@ gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
 
 The platform-managed **Vertex AI Service Agent** is responsible for orchestrating the deployment of Reasoning Engines. To allow it to deploy using your custom service account, it must be granted **Service Account User** (`roles/iam.serviceAccountUser`) on the custom service account.
 
-### Identity of the Vertex AI Service Agent:
-```text
-service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com
+### Step 1: (Optional) Verify or Create the Vertex AI Service Agent
+> [!NOTE]
+> **Why is it not showing in the GCP IAM Console?**
+If the service agent does not exist or was never provisioned in your project yet, you can explicitly force its creation by running (see the [gcloud beta services identity create CLI Reference](https://cloud.google.com/sdk/gcloud/reference/beta/services/identity/create) for details):
+```bash
+gcloud beta services identity create \
+  --service=aiplatform.googleapis.com \
+  --project=YOUR_PROJECT_ID
 ```
-*(Note: Replace `PROJECT_NUMBER` with your actual Google Cloud Project Number).*
 
-### Granting the Delegation Permission:
-Run the following command to allow the service agent to act as your custom service account:
+### Step 2: Granting the Delegation Permission
+Once the service agent exists, run the following command to allow it to act as your custom service account:
 ```bash
 gcloud iam service-accounts add-iam-policy-binding \
   multi-tool-agent-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com \
@@ -142,6 +146,20 @@ The identity running the `deploy.py` script (e.g., a developer's user account or
 | **Vertex AI Operations** | `aiplatform.operations.get` | Project Level | Polls and tracks the status of the long-running deployment asynchronous operation. | `roles/aiplatform.reasoningEngineAdmin` |
 | **Cloud Storage** | `storage.buckets.get`<br>`storage.objects.create`<br>`storage.objects.get` | GCS Staging Bucket | Verifies the bucket, uploads the source bundle, and confirms successful package upload. | `roles/storage.objectAdmin` |
 | **Service Account** | `iam.serviceAccounts.actAs` | Custom Service Account | Enables the deployer to run the Reasoning Engine as the custom service account. | `roles/iam.serviceAccountUser` |
+
+> [!IMPORTANT]
+> **Security Best Practice for `iam.serviceAccounts.actAs`:**
+> To prevent the deployer (developer or CI/CD identity) from being able to impersonate *any* service account in the project, do **not** grant `roles/iam.serviceAccountUser` at the project level. 
+> Instead, grant it **exclusively on the custom service account resource itself** using the command below. This isolates the impersonation capability strictly to this specific service account:
+>
+> ```bash
+> gcloud iam service-accounts add-iam-policy-binding \
+>   multi-tool-agent-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com \
+>   --role="roles/iam.serviceAccountUser" \
+>   --member="user:developer@example.com" \
+>   --project=YOUR_PROJECT_ID
+> ```
+
 
 ---
 
